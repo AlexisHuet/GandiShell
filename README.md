@@ -7,7 +7,8 @@ Disclaimer
 ----------
 
 You need a valid gandi account with credits available to use
-this software, see http://www.gandi.net
+this software, see http://www.gandi.net.
+
 If you don't understand what it is, you probably don't need
 this software ;-)
 
@@ -28,17 +29,27 @@ How it works
 - Go to https://www.gandi.net/admin/api_key to obtain your api key
 and copy it in the config.ini file.
 - run ./gandishell/shell.py
+
 GandiShell will show your account information on startup.
 - Type your command. You can use the TAB key for autocompletion.
+
 Examples:
 
-    Get the list of avaible images:
+- Get the list of avaible images:
+
     (g)image list
-    Get details about one particular image:
+- Get details about one particular image:
+
     (g)image info 42
-    Create a new VirtualMachine with interactive questions:
+- Create a new VirtualMachine with interactive questions:
+
     (g)vm create
-    Easy ssh connection to a VM:
+
+- Attach disk number 4242 to VM 42 :
+
+    (g)vm disk_attach 42 4242
+- Easy ssh connection to a VM:
+
     (g)vm connect 4242
 
 Some working features are :
