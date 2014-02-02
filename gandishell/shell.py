@@ -17,17 +17,17 @@
 from cmd import Cmd
 from shlex import split
 
-from objects import Account
-from datacenter import Datacenter
-from disk import Disk
-from image import Image
-from ip import Ip
-from iface import Iface
-from vm import VirtualMachine as VM
-from utils import (get_api, PROMPT,
-                   debug, info, warning, welcome,
-                   print_iter, catch_fault
-                  )
+from gandishell.objects import Account
+from gandishell.datacenter import Datacenter
+from gandishell.disk import Disk
+from gandishell.image import Image
+from gandishell.ip import Ip
+from gandishell.iface import Iface
+from gandishell.vm import VirtualMachine as VM
+from gandishell.utils import (get_api, PROMPT,
+                              debug, info, warning, welcome,
+                              print_iter, catch_fault
+                             )
 
 
 #pylint: disable=R0904
@@ -192,7 +192,3 @@ class GandiShell(Cmd):
     def complete_vm(self, text, line, begidx, endidx):
         """Autocompletion for the vm command."""
         return self.complete_handler(text, line, begidx, endidx, VM)
-
-
-if __name__ == '__main__':
-    GandiShell().cmdloop()

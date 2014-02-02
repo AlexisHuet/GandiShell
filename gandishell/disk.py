@@ -13,9 +13,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Stuffs to represent a disk."""
 
-from objects import DataObject, Operation
+from gandishell.objects import DataObject, Operation
 
-from utils import APIKEY, info, catch_fault
+from gandishell.utils import APIKEY, info, catch_fault
 
 
 class Disk(DataObject):

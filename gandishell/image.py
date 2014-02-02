@@ -13,9 +13,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Stuffs to represent a disk image."""
 
-from objects import DataObject
+from gandishell.objects import DataObject
 
-from utils import APIKEY, ask_string, info, warning, catch_fault
+from gandishell.utils import APIKEY, ask_string, info, warning, catch_fault
 
 
 class Image(DataObject):

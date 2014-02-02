@@ -1,35 +1,48 @@
+# Backup files
+*.~
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
 *.py[cod]
 
 # C extensions
 *.so
 
-# Packages
+# Distribution / packaging
 *.egg
 *.egg-info
-dist
-build
-eggs
-parts
-bin
-var
-sdist
-develop-eggs
 .installed.cfg
+__pycache__
+bin
+build
+develop-eggs
+dist
+eggs
+include
 lib
 lib64
-__pycache__
+man
+parts
+sdist
+var
 
 # Installer logs
 pip-log.txt
+pip-delete-this-directory.txt
 
 # Unit test / coverage reports
+.cache
 .coverage
 .tox
 nosetests.xml
+coverage.xml
 
 # Translations
 *.mo
 
+# Sphinx documentation
+docs/_build/
+#
 # Mr Developer
 .mr.developer.cfg
 .project

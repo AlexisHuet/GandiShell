@@ -16,14 +16,14 @@
 from getpass import getpass
 from subprocess import call
 
-from datacenter import Datacenter
-from disk import Disk
-from image import Image
-from objects import DataObject, Operation
-from utils import (APIKEY,
-                   ask_int, ask_string,
-                   bold, error, info, print_iter,
-                   catch_fault)
+from gandishell.datacenter import Datacenter
+from gandishell.disk import Disk
+from gandishell.image import Image
+from gandishell.objects import DataObject, Operation
+from gandishell.utils import (APIKEY,
+                              ask_int, ask_string,
+                              bold, error, info, print_iter,
+                              catch_fault)
 
 
 class VirtualMachine(DataObject):

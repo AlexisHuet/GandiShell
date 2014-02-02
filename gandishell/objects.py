@@ -15,7 +15,7 @@
 
 from termcolor import colored
 
-from utils import APIKEY
+from gandishell.utils import APIKEY
 
 
 class DataObject(dict):

@@ -13,9 +13,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Stuffs to represent a datacenter."""
 
-from objects import DataObject
+from gandishell.objects import DataObject
 
-from utils import APIKEY
+from gandishell.utils import APIKEY
 
 
 class Datacenter(DataObject):

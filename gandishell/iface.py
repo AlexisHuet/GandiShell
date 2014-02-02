@@ -13,10 +13,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Representation of an Interface."""
 
-from objects import DataObject
-from utils import (APIKEY,
-                   info,
-                   catch_fault)
+from gandishell.objects import DataObject
+from gandishell.utils import (APIKEY,
+                              info,
+                              catch_fault)
 
 
 class Iface(DataObject):
