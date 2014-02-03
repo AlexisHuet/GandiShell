@@ -27,7 +27,7 @@ from gandishell.vm import VirtualMachine as VM
 from gandishell.utils import (get_api, PROMPT,
                               debug, info, warning, welcome,
                               print_iter, catch_fault
-                             )
+                              )
 
 
 #pylint: disable=R0904
@@ -39,7 +39,6 @@ class GandiShell(Cmd):
     api = get_api()
     prompt = PROMPT
 
-
     def __init__(self):
         with catch_fault():
             super().__init__()
@@ -49,11 +48,11 @@ class GandiShell(Cmd):
             self.disks, self.images, self.vms = None, None, None
             self.ips, self.ifaces = None, None
             self.stored_objects = {
-                    Disk: self.disks,
-                    Image: self.images,
-                    Ip: self.ips,
-                    Iface: self.ifaces,
-                    VM: self.vms,
+                Disk: self.disks,
+                Image: self.images,
+                Ip: self.ips,
+                Iface: self.ifaces,
+                VM: self.vms,
             }
             for i in [VM, Disk, Image, Ip, Iface]:
                 self.stored_objects[i] = i.list(self.api)
@@ -98,7 +97,8 @@ class GandiShell(Cmd):
         else:
             warning("Unknow command : {}.".format(tokens[0]))
 
-    def complete_handler(self, text, line, begidx, endidx, ttype):  #pylint: disable=W0613,R0913
+    # pylint: disable=W0613,R0913
+    def complete_handler(self, text, line, begidx, endidx, ttype):
         """Propose coherent completions for a given type."""
         completions = []
         tokens = split(line)
@@ -111,19 +111,19 @@ class GandiShell(Cmd):
             # Is it a complete token that need an id ?
             if token in ttype.instance_token:
                 completions = [str(key) + ' ' for key in
-                        self.stored_objects[ttype].keys()]
+                               self.stored_objects[ttype].keys()]
             # Or do we need to complete ? (can implicitely be empty)
             elif token not in ttype.all_token:
                 completions = [f + ' ' for f in ttype.all_token
-                                if f.startswith(token)]
+                               if f.startswith(token)]
             # Implicit else: the token is already complete
         # Complete ids when they are ambiguous
         elif len(tokens) == 3:
             token = tokens[2]
             # double str(key) is not very clean, but works
             completions = [str(key) + ' ' for key in
-                    self.stored_objects[ttype].keys()
-                    if str(key).startswith(token)]
+                           self.stored_objects[ttype].keys()
+                           if str(key).startswith(token)]
         return completions
 
     ############### Small commands without arguments ################
@@ -134,7 +134,7 @@ class GandiShell(Cmd):
             self.account.refresh(self.api)
         print(self.account)
 
-    def do_EOF(self, line):  #pylint: disable=C0103,W0613,R0201
+    def do_EOF(self, line):  # pylint: disable=C0103,W0613,R0201
         """Just say good-bye at end."""
         print("\n*{:-^77}*".format("- See U Soon - .{}".format(line)))
         return True

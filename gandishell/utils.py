@@ -29,19 +29,21 @@ APIKEY = CONFIG['MAIN']['APIKEY']
 PROMPT = colored('(', attrs=['blink']) + 'g)'
 VERSION = 0.1
 
+
 def ask_string(name, default=None):
     """Ask a string to the user."""
-    inpt = str(input("Please provide {} (str)".format(name)))  #pylint: disable=W0141
+    inpt = str(input("Please provide {} (str)".format(name)))
     while inpt == '':
-        inpt = str(input("Please provide NOT EMPTY {} (str)".format(name)))  #pylint: disable=W0141
+        inpt = str(input("Please provide NOT EMPTY {} (str)".format(name)))
         if default is not None:
             return default
     return inpt
 
+
 def ask_int(name, default=0, choices=None):
     """Ask an int to the user."""
     tmpl = "Please provide {} (int) (default: {})"
-    inpt = input(tmpl.format(name, default))  #pylint: disable=W0141
+    inpt = input(tmpl.format(name, default))
     if inpt == '':
         inpt = default
     else:
@@ -59,6 +61,7 @@ def ask_int(name, default=0, choices=None):
                 inpt = ask_int('correct ({})'.format(
                     str(choices)) + name, default, choices)
     return inpt
+
 
 def get_api():
     """Simple accessor to the api."""
@@ -86,7 +89,7 @@ def info(text):
 def error(text):
     """Print text in bold red with exclamation marks, for errors."""
     print(colored('/!\\ ' + text + ' /!\\',
-          'yellow', 'on_red',  attrs=['bold']))
+          'yellow', 'on_red', attrs=['bold']))
 
 
 def warning(text):
@@ -104,6 +107,7 @@ def print_iter(toprint):
             print(elem)
     else:
         info(toprint)
+
 
 def welcome(account):
     """Print the welcome message."""
@@ -128,6 +132,7 @@ conditions.""".format(VERSION)
     msg = '\n'.join([idty, cred, cost])
     print(msg.format(**dict(account, value=value, date=date)))
 
+
 @contextmanager
 def catch_fault():
     """A decorator to catch xmlprc.Fault, and just print it."""
@@ -135,10 +140,10 @@ def catch_fault():
         yield
     except Fault as exc:
         error("An XMLRPC error {} occured: {}".format(
-                    exc.faultCode, exc.faultString))
+              exc.faultCode, exc.faultString))
     except SocketError as exc:
         error("A socket error occured: ({}) - {}".format(
-                    exc.errno, exc.strerror))
+              exc.errno, exc.strerror))
 
 
 try:

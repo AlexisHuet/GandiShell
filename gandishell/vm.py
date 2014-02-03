@@ -134,7 +134,6 @@ class VirtualMachine(DataObject):
             res = api.hosting.vm.disk_detach(APIKEY, self['id'], disk['id'])
             return Operation(**res)
 
-
     ############## VM makers ###############
     @classmethod
     def create(cls, api):
@@ -157,5 +156,5 @@ class VirtualMachine(DataObject):
         image = Image.filter(api, datacenter_id)
         with catch_fault():
             ope = api.hosting.vm.create_from(APIKEY, vm_spec,
-                                            disk_spec, image)
+                                             disk_spec, image)
             return ope

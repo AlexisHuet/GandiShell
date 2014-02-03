@@ -38,13 +38,13 @@ class Image(DataObject):
     def filter(cls, api, datacenter_id):
         """Select an image by filtering on his name."""
         images = {k: v for k, v in cls.list(api).items()
-                    if v['datacenter_id']  == datacenter_id}
+                  if v['datacenter_id'] == datacenter_id}
         for k, v in images.items():
             print(k, v)
-        while(len(images) > 1):
+        while len(images) > 1:
             _ = "an id or a keyword, as we still have {} possible disk images."
             keyword = ask_string(_.format(len(images)), '')
-            try :
+            try:
                 keyword = int(keyword)
                 if keyword not in images:
                     warning("{} is not a valid id".format(keyword))

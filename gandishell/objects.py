@@ -31,7 +31,7 @@ class DataObject(dict):
             if key not in self.hidden_keys:
                 data += "\n*\t{}: {}".format(colored(key,
                                                      'grey', attrs=['bold']),
-                                            value)
+                                             value)
         return self.str_tmpl.format(ttype=colored(ttype,
                                                   'red', attrs=['bold']),
                                     data=data, **self)
@@ -45,7 +45,6 @@ class DataObject(dict):
 
 class Account(DataObject):
     """The account itself."""
-
 
     hidden_keys = ['id',  # Showed by template
                    'share_definition', 'products',  # Useless

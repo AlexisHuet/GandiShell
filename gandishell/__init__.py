@@ -16,9 +16,9 @@ Never believe that something is perfect.
 
 __version__ = '0.2.dev'
 
-
 from gandishell.shell import GandiShell
 
-def main():
-    GandiShell().cmdloop()
 
+def main():
+    """Launch the command loop."""
+    GandiShell().cmdloop()
