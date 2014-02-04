@@ -29,6 +29,8 @@ How it works
 - Go to https://www.gandi.net/admin/api_key to obtain your api key
 and copy it in the config.ini file.
 - run ./gandishell/shell.py
+  or
+- use virtualenv and python setup.py (develop|install)
 
 GandiShell will show your account information on startup.
 - Type your command. You can use the TAB key for autocompletion.

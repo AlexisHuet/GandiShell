@@ -58,8 +58,3 @@ class Account(DataObject):
         """Get fresh data about account state."""
         self.clear()
         self.update(**api.hosting.account.info(APIKEY))
-
-
-class Operation(DataObject):
-    """The operation itself."""
-    pass

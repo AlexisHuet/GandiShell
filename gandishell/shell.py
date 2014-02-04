@@ -23,6 +23,7 @@ from gandishell.disk import Disk
 from gandishell.image import Image
 from gandishell.ip import Ip
 from gandishell.iface import Iface
+from gandishell.operation import Operation
 from gandishell.vm import VirtualMachine as VM
 from gandishell.utils import (get_api, PROMPT,
                               debug, info, warning, welcome,
@@ -30,7 +31,7 @@ from gandishell.utils import (get_api, PROMPT,
                               )
 
 
-#pylint: disable=R0904
+#pylint: disable=R0904,R0902
 class GandiShell(Cmd):
     """
     The GandiShell is a line-oriented command interpreter that let you
@@ -45,16 +46,17 @@ class GandiShell(Cmd):
             self.account = Account(self.api)
             welcome(self.account)
             # Map this type of objects to a self variable
-            self.disks, self.images, self.vms = None, None, None
-            self.ips, self.ifaces = None, None
+            self.disks, self.images, self.ips = None, None, None
+            self.ifaces, self.operations, self.vms = None, None, None
             self.stored_objects = {
                 Disk: self.disks,
                 Image: self.images,
                 Ip: self.ips,
                 Iface: self.ifaces,
+                Operation: self.operations,
                 VM: self.vms,
             }
-            for i in [VM, Disk, Image, Ip, Iface]:
+            for i in [Disk, Image, Ip, Iface, Operation, VM]:
                 self.stored_objects[i] = i.list(self.api)
                 info("{} loaded.".format(i.__name__))
 
@@ -183,6 +185,17 @@ class GandiShell(Cmd):
     def complete_ip(self, text, line, begidx, endidx):
         """Autocompletion for the ip command."""
         return self.complete_handler(text, line, begidx, endidx, Ip)
+
+    ################ Operation #################
+    def do_operation(self, line):
+        """
+        operation command [id] : execute specified command [on a operation]
+        """
+        self.command_handler(line, Operation)
+
+    def complete_operation(self, text, line, begidx, endidx):
+        """Autocompletion for the operation command."""
+        return self.complete_handler(text, line, begidx, endidx, Operation)
 
     ########### Virtual Machines ###########
     def do_vm(self, line):

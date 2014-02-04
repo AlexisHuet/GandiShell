@@ -11,51 +11,43 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-"""Stuffs to represent a disk."""
+"""Representation of Operations."""
 
 from gandishell.objects import DataObject
-from gandishell.operation import Operation
+from gandishell.utils import (APIKEY,
+                              info,
+                              catch_fault)
 
-from gandishell.utils import APIKEY, info, catch_fault
 
-
-class Disk(DataObject):
-    """The disk itself."""
+class Operation(DataObject):
+    """The operation itself."""
 
     class_token = ['count', 'list']
-    instance_token = ['delete', 'info']
+    instance_token = ['info']
     all_token = class_token + instance_token
 
     ############# classmethods #############
     @classmethod
     def count(cls, api):
-        """Count the number of existing disks."""
-        info("Counting Disk")
+        """Get the number of existing Operation."""
+        info("Counting Operation")
         with catch_fault():
-            res = api.hosting.disk.count(APIKEY)
-            return "Disk count: {}".format(res)
+            res = api.operation.count(APIKEY)
+            return "Operation count: {}".format(res)
 
     @classmethod
     def list(cls, api):
-        """Get a list of existing disks."""
+        """Get a list of existing Operation."""
         res = {}
         with catch_fault():
-            for disk in api.hosting.disk.list(APIKEY):
-                res[disk['id']] = Disk(**disk)
+            for oper in api.operation.list(APIKEY):
+                res[oper['id']] = Operation(**oper)
             return res
 
     ########### id only commands ###########
-    def delete(self, api):
-        """Delete this disk."""
-        info("Deleting Disk {}".format(self['id']))
-        with catch_fault():
-            res = api.hosting.disk.delete(APIKEY, self['id'])
-            ope = Operation(**res)
-            return ope
-
     def info(self, api):
-        """Get info about this disk."""
-        info("Info about Disk {}".format(self['id']))
+        """Get info about this Operation."""
+        info("Info about Operation {}".format(self['id']))
         with catch_fault():
-            res = api.hosting.disk.info(APIKEY, self['id'])
-            return Disk(**res)
+            res = api.operation.info(APIKEY, self['id'])
+            return Operation(**res)

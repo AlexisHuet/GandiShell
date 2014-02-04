@@ -19,7 +19,8 @@ from subprocess import call
 from gandishell.datacenter import Datacenter
 from gandishell.disk import Disk
 from gandishell.image import Image
-from gandishell.objects import DataObject, Operation
+from gandishell.objects import DataObject
+from gandishell.operation import Operation
 from gandishell.utils import (APIKEY,
                               ask_int, ask_string,
                               bold, error, info, print_iter,
