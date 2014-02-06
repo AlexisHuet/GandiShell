@@ -17,14 +17,10 @@
 from cmd import Cmd
 from shlex import split
 
-from gandishell.objects import Account
-from gandishell.datacenter import Datacenter
-from gandishell.disk import Disk
-from gandishell.image import Image
-from gandishell.ip import Ip
-from gandishell.iface import Iface
-from gandishell.operation import Operation
-from gandishell.vm import VirtualMachine as VM
+from gandishell.objects import (Account, Datacenter, Disk,
+                                Image, Ip, Iface,
+                                Operation, VirtualMachine as VM)
+
 from gandishell.utils import (get_api, PROMPT,
                               debug, info, warning, welcome,
                               print_iter, catch_fault
