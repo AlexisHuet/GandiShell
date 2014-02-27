@@ -78,7 +78,8 @@ def bold(text):
 
 def debug(text):
     """Print text in green, for debugging."""
-    print(colored(text, 'yellow'))
+    print(colored("-" * 80, 'green'))
+    print(colored(text, 'green'))
 
 
 def info(text):

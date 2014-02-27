@@ -17,13 +17,15 @@
 from cmd import Cmd
 from shlex import split
 
-from gandishell.objects import (Account, Datacenter, Disk,
+from pyparsing import ParseException
+
+from gandishell.objects import (Account, Disk,
                                 Image, Ip, Iface,
                                 Operation, VirtualMachine as VM)
-
+from gandishell.parsing import CMD_TO_TYPE, parse_command
 from gandishell.utils import (get_api, PROMPT,
-                              debug, info, warning, welcome,
-                              print_iter, catch_fault
+                              debug, info, error, warning, welcome,
+                              catch_fault, print_iter
                               )
 
 
@@ -56,148 +58,46 @@ class GandiShell(Cmd):
                 self.stored_objects[i] = i.list(self.api)
                 info("{} loaded.".format(i.__name__))
 
-    def command_handler(self, line, ttype):
-        """Parse the line and run the selected method on the given type."""
-        tokens = split(line)
-        # No arguments : print out available actions
-        if len(tokens) is 0:
-            info("Possible actions are : {}".format(' '.join(ttype.all_token)))
-            return
-        # Class action : execute it
-        if tokens[0] in ttype.class_token:
-            res = getattr(ttype, tokens[0])(self.api)
-            print_iter(res)
-        # Instance action : we need an id
-        elif tokens[0] in ttype.instance_token:
-            try:
-                obj_id = int(tokens[1])
-            except ValueError:
-                warning("Bad input.")
-                return
-            except IndexError:
-                warning("'{}' is not a complete command".format(tokens))
-                return
-            try:
-                obj = self.stored_objects[ttype][obj_id]
-            except KeyError as exc:
-                warning("Unknow id: {}".format(exc))
-                return
-            try:
-                ope = getattr(obj, tokens[0])(self.api, *tokens[2:])
-                print(ope)
-            except TypeError as exc:
-                warning("Bad arguments : {}".format(exc))
-            # Refresh internal data, except for read-only commands.
-            if ttype in self.stored_objects \
-                    and tokens[0] not in ['count', 'info', 'list']:
-                debug('refreshing {}'.format(ttype.__name__))
-                self.stored_objects[ttype] = ttype.list(self.api)
-        else:
-            warning("Unknow command : {}.".format(tokens[0]))
+    def default(self, line):
+        try:
+            parse_result = parse_command(line)
+            if 'instance' in parse_result['command']:
+                klass = parse_result['command']['instance']['type']
+                iid = parse_result['command']['instance']['id'][0]
+                methodname = parse_result['command']['inst_action']
+                obj = self.stored_objects[klass][iid]
+                method = getattr(obj, methodname)
+                print(method(self.api))
+            else:
+                klass = parse_result['command']['type']
+                iid = None
+                methodname = parse_result['command']['type_action']
+                method = getattr(klass, methodname)
+                result = method(self.api)
+                print_iter(result)
+        except ParseException as pex:
+            warning(str(pex))
 
-    # pylint: disable=W0613,R0913
-    def complete_handler(self, text, line, begidx, endidx, ttype):
-        """Propose coherent completions for a given type."""
-        completions = []
-        tokens = split(line)
-        # Empty line: propose all token
-        if len(tokens) == 1:
-            completions = ttype.all_token[:]
-        # There is a first token
-        elif len(tokens) == 2:
-            token = tokens[1]
-            # Is it a complete token that need an id ?
-            if token in ttype.instance_token:
-                completions = [str(key) + ' ' for key in
-                               self.stored_objects[ttype].keys()]
-            # Or do we need to complete ? (can implicitely be empty)
-            elif token not in ttype.all_token:
-                completions = [f + ' ' for f in ttype.all_token
-                               if f.startswith(token)]
-            # Implicit else: the token is already complete
-        # Complete ids when they are ambiguous
-        elif len(tokens) == 3:
-            token = tokens[2]
-            # double str(key) is not very clean, but works
-            completions = [str(key) + ' ' for key in
-                           self.stored_objects[ttype].keys()
-                           if str(key).startswith(token)]
-        return completions
+    def completedefault(self, text, line, begidx, endidx):
+        debug('completedefault')
 
-    ############### Small commands without arguments ################
-    def do_account_info(self, line):
-        """account_info [refresh] : Show acount data."""
-        if line:
-            debug('Refreshing account info')
-            self.account.refresh(self.api)
-        print(self.account)
+    def completenames(self, text, *ignored):
+        try:
+            debug(text + str(ignored))
+            parse_result = parse_command(text)
+        except ParserException as pex:
+            debug(str(pex))
+            debug(str(pex.msg))
+            debug(str(pex.pstr))
+        except Exception as exc:
+            error(exc)
+        finally:
+            res = [x + '.' for x in CMD_TO_TYPE.keys() if x.startswith(text)]
+            res += Cmd.completenames(self, text, *ignored)
+            debug(res)
+            return res
 
     def do_EOF(self, line):  # pylint: disable=C0103,W0613,R0201
         """Just say good-bye at end."""
         print("\n*{:-^77}*".format("- See U Soon - .{}".format(line)))
         return True
-
-    ############## Datacenter ##############
-    def do_datacenter(self, line):
-        """datacenter command : execute specified command"""
-        self.command_handler(line, Datacenter)
-
-    def complete_datacenter(self, text, line, begidx, endidx):
-        """Autocompletion for the datacenter command."""
-        return self.complete_handler(text, line, begidx, endidx, Datacenter)
-
-    ############# Disk Images ##############
-    def do_image(self, line):
-        """image command [id] : execute specified command [on image]"""
-        self.command_handler(line, Image)
-
-    def complete_image(self, text, line, begidx, endidx):
-        """Autocompletion for the image command."""
-        return self.complete_handler(text, line, begidx, endidx, Image)
-
-    ################ Disks #################
-    def do_disk(self, line):
-        """disk command [id] : execute specified command [on a disk]"""
-        self.command_handler(line, Disk)
-
-    def complete_disk(self, text, line, begidx, endidx):
-        """Autocompletion for the disk command."""
-        return self.complete_handler(text, line, begidx, endidx, Disk)
-
-    ################ Iface #################
-    def do_iface(self, line):
-        """iface command [id] : execute specified command [on a iface]"""
-        self.command_handler(line, Iface)
-
-    def complete_iface(self, text, line, begidx, endidx):
-        """Autocompletion for the iface command."""
-        return self.complete_handler(text, line, begidx, endidx, Iface)
-
-    ################ IP #################
-    def do_ip(self, line):
-        """ip command [id] : execute specified command [on a ip]"""
-        self.command_handler(line, Ip)
-
-    def complete_ip(self, text, line, begidx, endidx):
-        """Autocompletion for the ip command."""
-        return self.complete_handler(text, line, begidx, endidx, Ip)
-
-    ################ Operation #################
-    def do_operation(self, line):
-        """
-        operation command [id] : execute specified command [on a operation]
-        """
-        self.command_handler(line, Operation)
-
-    def complete_operation(self, text, line, begidx, endidx):
-        """Autocompletion for the operation command."""
-        return self.complete_handler(text, line, begidx, endidx, Operation)
-
-    ########### Virtual Machines ###########
-    def do_vm(self, line):
-        """vm command [id] : execute specified command [on a specified VM]"""
-        self.command_handler(line, VM)
-
-    def complete_vm(self, text, line, begidx, endidx):
-        """Autocompletion for the vm command."""
-        return self.complete_handler(text, line, begidx, endidx, VM)
